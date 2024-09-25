@@ -2,6 +2,7 @@ from flask import Blueprint
 from core import db
 from core.apis import decorators
 from core.apis.responses import APIResponse
+from core.libs.exceptions import FyleError
 from core.models.assignments import Assignment
 
 from .schema import AssignmentSchema, AssignmentGradeSchema
@@ -27,7 +28,7 @@ def grade_assignment(p, incoming_payload):
     existing_graded_assignment = Assignment.get_by_id(grade_assignment_payload.id)
 
     if p.teacher_id != existing_graded_assignment.teacher_id:
-        return APIResponse.raise_error(400)
+        raise FyleError("The teacher assigned with this assignment is different", 400)
 
     graded_assignment = Assignment.mark_grade(
         _id=grade_assignment_payload.id,

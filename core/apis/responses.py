@@ -6,6 +6,3 @@ class APIResponse(Response):
     def respond(cls, data):
         return make_response(jsonify(data=data))
 
-    @classmethod
-    def raise_error(cls, status_code=500):
-        return Response(status=status_code)
