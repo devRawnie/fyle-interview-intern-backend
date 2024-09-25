@@ -28,7 +28,7 @@ def grade_assignment(p, incoming_payload):
 
     # If assignment to be updated is in Draft state, return 400
     if existing_graded_assignment.state == AssignmentStateEnum.DRAFT:
-        return APIResponse.respond(status_code=400)
+        return APIResponse.raise_error(status_code=400)
 
     graded_assignment = Assignment.mark_grade(
         _id=grade_assignment_payload.id,

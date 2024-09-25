@@ -3,5 +3,9 @@ from flask import Response, jsonify, make_response
 
 class APIResponse(Response):
     @classmethod
-    def respond(cls, data={}, status_code=200):
-        return make_response(jsonify(data=data), status=status_code)
+    def respond(cls, data):
+        return make_response(jsonify(data=data))
+
+    @classmethod
+    def raise_error(cls, status_code=500):
+        return make_response(status=status_code)
