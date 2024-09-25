@@ -2,7 +2,7 @@ from flask import Blueprint
 from core import db
 from core.apis import decorators
 from core.apis.responses import APIResponse
-from core.models.assignments import Assignment
+from core.models.assignments import Assignment, AssignmentStateEnum
 from marshmallow.exceptions import ValidationError
 
 from .schema import AssignmentSchema, AssignmentSubmitSchema
@@ -44,8 +44,10 @@ def submit_assignment(p, incoming_payload):
     submitted_assignment = Assignment.submit(
         _id=submit_assignment_payload.id,
         teacher_id=submit_assignment_payload.teacher_id,
-        auth_principal=p
+        auth_principal=p,
+        state=AssignmentStateEnum.SUBMITTED
     )
+
     db.session.commit()
     submitted_assignment_dump = AssignmentSchema().dump(submitted_assignment)
     return APIResponse.respond(data=submitted_assignment_dump)
