@@ -28,7 +28,7 @@ def grade_assignment(p, incoming_payload):
     existing_assignment = Assignment.get_by_id(grade_assignment_payload.id)
 
     if not existing_assignment:
-        raise FyleError(status_code=400, message="Assignment with passed id not found")
+        raise FyleError(status_code=404, message="Assignment with passed id not found")
 
     if p.teacher_id != existing_assignment.teacher_id:
         raise FyleError(status_code=400, message="The teacher assigned with this assignment is different")
