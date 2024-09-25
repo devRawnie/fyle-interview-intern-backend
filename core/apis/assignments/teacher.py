@@ -25,14 +25,17 @@ def grade_assignment(p, incoming_payload):
     """Grade an assignment"""
     grade_assignment_payload = AssignmentGradeSchema().load(incoming_payload)
 
-    existing_graded_assignment = Assignment.get_by_id(grade_assignment_payload.id)
+    existing_assignment = Assignment.get_by_id(grade_assignment_payload.id)
 
-    if p.teacher_id != existing_graded_assignment.teacher_id:
+    if not existing_assignment:
+        raise FyleError(status_code=400, message="Assignment with passed id not found")
+
+    if p.teacher_id != existing_assignment.teacher_id:
         raise FyleError(status_code=400, message="The teacher assigned with this assignment is different")
 
-    existing_graded_assignment = Assignment.get_by_id(grade_assignment_payload.id)
+    existing_assignment = Assignment.get_by_id(grade_assignment_payload.id)
 
-    if existing_graded_assignment.state != AssignmentStateEnum.SUBMITTED:
+    if existing_assignment.state != AssignmentStateEnum.SUBMITTED:
         raise FyleError(status_code=400, message="Only a submitted assignment can be graded")
 
     graded_assignment = Assignment.mark_grade(
