@@ -56,3 +56,10 @@ pytest -vvv -s tests/
 # pytest --cov
 # open htmlcov/index.html
 ```
+
+## Steps to setup using Docker
+
+- Install `docker` on your system
+- Clone the repository, and go inside the repository folder
+- Run `docker compose up -d`
+
