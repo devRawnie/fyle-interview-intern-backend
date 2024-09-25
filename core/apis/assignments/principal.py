@@ -4,7 +4,7 @@ from core.apis import decorators
 from core.apis.responses import APIResponse
 from core.models.assignments import Assignment
 
-from .schema import AssignmentSchema, AssignmentGradeSchema
+from .schema import AssignmentSchema, AssignmentGradeSchema, AssignmentStateEnum
 principal_assignments_resources = Blueprint('principal_assignments_resources', __name__)
 
 
