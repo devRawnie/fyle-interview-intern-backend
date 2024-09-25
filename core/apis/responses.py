@@ -8,4 +8,4 @@ class APIResponse(Response):
 
     @classmethod
     def raise_error(cls, status_code=500):
-        return make_response(status=status_code)
+        return Response(status=status_code)
