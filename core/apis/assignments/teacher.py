@@ -24,6 +24,11 @@ def grade_assignment(p, incoming_payload):
     """Grade an assignment"""
     grade_assignment_payload = AssignmentGradeSchema().load(incoming_payload)
 
+    existing_graded_assignment = Assignment.get_by_id(grade_assignment_payload.id)
+
+    if p.teacher_id != existing_graded_assignment.teacher_id:
+        return APIResponse.raise_error(400)
+
     graded_assignment = Assignment.mark_grade(
         _id=grade_assignment_payload.id,
         grade=grade_assignment_payload.grade,
