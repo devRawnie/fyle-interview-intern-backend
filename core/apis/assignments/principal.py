@@ -2,10 +2,10 @@ from flask import Blueprint
 from core import db
 from core.apis import decorators
 from core.apis.responses import APIResponse
-from core.models.assignments import Assignment, AssignmentStateEnum
+from core.models.assignments import Assignment, AssignmentStateEnum, Teacher
 from marshmallow.exceptions import ValidationError
 
-from .schema import AssignmentSchema, AssignmentGradeSchema
+from .schema import AssignmentSchema, AssignmentGradeSchema, TeacherSchema
 principal_assignments_resources = Blueprint('principal_assignments_resources', __name__)
 
 
@@ -16,6 +16,14 @@ def list_assignments(p):
     principal_assignments = Assignment.get_assignments_by_principal()
     principal_assignments_dump = AssignmentSchema().dump(principal_assignments, many=True)
     return APIResponse.respond(data=principal_assignments_dump)
+
+@principal_assignments_resources.route('/teachers', methods=['GET'], strict_slashes=False)
+@decorators.authenticate_principal
+def list_teachers(p):
+    """Returns list of teachers"""
+    all_teachers = Teacher.get_all_teachers()
+    all_teachers_dump = TeacherSchema().dump(all_teachers, many=True)
+    return APIResponse.respond(data=all_teachers_dump)
 
 
 @principal_assignments_resources.route('/assignments/grade', methods=['POST'], strict_slashes=False)
