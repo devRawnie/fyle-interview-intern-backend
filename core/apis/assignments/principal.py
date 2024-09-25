@@ -24,6 +24,12 @@ def grade_assignment(p, incoming_payload):
     """Grade an assignment"""
     grade_assignment_payload = AssignmentGradeSchema().load(incoming_payload)
 
+    existing_graded_assignment = Assignment.get_by_id(grade_assignment_payload.id)
+
+    # If assignment to be updated is in Draft state, return 400
+    if existing_graded_assignment.state == AssignmentStateEnum.DRAFT:
+        return APIResponse.respond(status_code=400)
+
     graded_assignment = Assignment.mark_grade(
         _id=grade_assignment_payload.id,
         grade=grade_assignment_payload.grade,
