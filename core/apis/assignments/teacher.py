@@ -28,12 +28,12 @@ def grade_assignment(p, incoming_payload):
     existing_graded_assignment = Assignment.get_by_id(grade_assignment_payload.id)
 
     if p.teacher_id != existing_graded_assignment.teacher_id:
-        raise FyleError("The teacher assigned with this assignment is different", 400)
+        raise FyleError(status_code=400, message="The teacher assigned with this assignment is different")
 
     existing_graded_assignment = Assignment.get_by_id(grade_assignment_payload.id)
 
     if existing_graded_assignment.state != AssignmentStateEnum.SUBMITTED:
-        raise FyleError("Only a submitted assignment can be graded", 400)
+        raise FyleError(status_code=400, message="Only a submitted assignment can be graded")
 
     graded_assignment = Assignment.mark_grade(
         _id=grade_assignment_payload.id,
