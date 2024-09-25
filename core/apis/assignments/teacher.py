@@ -3,7 +3,7 @@ from core import db
 from core.apis import decorators
 from core.apis.responses import APIResponse
 from core.libs.exceptions import FyleError
-from core.models.assignments import Assignment
+from core.models.assignments import Assignment, AssignmentStateEnum
 
 from .schema import AssignmentSchema, AssignmentGradeSchema
 teacher_assignments_resources = Blueprint('teacher_assignments_resources', __name__)
@@ -29,6 +29,11 @@ def grade_assignment(p, incoming_payload):
 
     if p.teacher_id != existing_graded_assignment.teacher_id:
         raise FyleError("The teacher assigned with this assignment is different", 400)
+
+    existing_graded_assignment = Assignment.get_by_id(grade_assignment_payload.id)
+
+    if existing_graded_assignment.state != AssignmentStateEnum.SUBMITTED:
+        raise FyleError("Only a submitted assignment can be graded", 400)
 
     graded_assignment = Assignment.mark_grade(
         _id=grade_assignment_payload.id,
