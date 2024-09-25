@@ -2,7 +2,8 @@ from flask import Blueprint
 from core import db
 from core.apis import decorators
 from core.apis.responses import APIResponse
-from core.models.assignments import Assignment
+from core.models.assignments import Assignment, AssignmentStateEnum
+from core.libs.exceptions import FyleError
 from marshmallow.exceptions import ValidationError
 
 from .schema import AssignmentSchema, AssignmentSubmitSchema
@@ -40,6 +41,10 @@ def upsert_assignment(p, incoming_payload):
 def submit_assignment(p, incoming_payload):
     """Submit an assignment"""
     submit_assignment_payload = AssignmentSubmitSchema().load(incoming_payload)
+
+    existing_assignment = Assignment.get_by_id(submit_assignment_payload.id)
+    if existing_assignment.state != AssignmentStateEnum.DRAFT:
+        raise FyleError("only a draft assignment can be submitted", 400)
 
     submitted_assignment = Assignment.submit(
         _id=submit_assignment_payload.id,
